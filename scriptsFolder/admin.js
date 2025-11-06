@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
             cerrarSesion(); // Limpia el token y los roles del localStorage
-            window.location.href = 'index.html'; // Redirige a la página de inicio de sesión
+            window.location.href = '../index.html';
         });
     }
 
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'error'
         });
         // 2. Redirige al usuario a la página principal.
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
         // 3. Detenemos la ejecución del script para que no intente hacer nada más.
         return; // Salimos de la función del DOMContentLoaded.
     }

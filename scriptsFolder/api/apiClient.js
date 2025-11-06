@@ -114,7 +114,7 @@ async function safeJsonParse(response) {
 function redirectToLogin() {
   localStorage.removeItem('jwt_token');
   localStorage.removeItem('user_roles');
-  window.location.href = 'index.html';
+  window.location.href = '/index.html'; // Usar ruta absoluta desde la raíz del sitio
 }
 
 /**

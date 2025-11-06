@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });0
         return;
       }
-      window.location.href = 'checkout-pago.html';
+      window.location.href = 'html/checkout-pago.html';
     });
   }
 });

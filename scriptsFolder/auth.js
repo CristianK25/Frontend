@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const userRoles = data.roles;
                     if (userRoles.includes('ROLE_ADMIN')) {
                         // Si es administrador, redirigir a la página de administración
-                        window.location.href = 'admin.html'; // admin.html está en la misma carpeta que index.html/productos.html
+                        window.location.href = '/html/admin.html';
                     } else {
                         // Si no es administrador, actualizar la UI normal (Mi Perfil, Cerrar Sesión)
                         updateUIForLoggedInUser();
@@ -145,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const userRoles = JSON.parse(localStorage.getItem('user_roles') || '[]');
 
         if (userRoles.includes('ROLE_ADMIN')) {
-            window.location.href = 'admin.html';
+            window.location.href = '/html/admin.html';
             return;
         }
 
         loginListItem.innerHTML = `
-            <a href="perfil.html" class="menu-btn menu-btn--profile" id="nav-profile-link">
+            <a href="/html/perfil.html" class="menu-btn menu-btn--profile" id="nav-profile-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                 </svg> Mi Perfil
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btn-logout')?.addEventListener('click', () => {
             cerrarSesion();
             showAlert({ title: 'Sesión Cerrada', message: 'Has cerrado sesión exitosamente.', type: 'info' });
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
         });
     }
 
@@ -240,4 +240,3 @@ if (typeof window.toggleLoginModal === 'undefined') {
         }
     }
 }
-

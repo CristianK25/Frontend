@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Script-G</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="icon" href="../imgs/favicon.svg?v=1" type="image/svg+xml" sizes="any">
+    <link rel="icon" href="imgs/favicon.svg?v=1" type="image/svg+xml" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href ="../css/chatbot.css">
-    <link rel="stylesheet" href="../css/productosStyle.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href ="css/chatbot.css">
+    <link rel="stylesheet" href="css/productosStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -257,7 +257,7 @@
             <nav>
                 <ul>
                     <li><a href="index.html" class="menu-btn"><i class="fa-solid fa-house"></i> Inicio</a></li>
-                    <li><a href="productos.html" class="menu-btn"><i class="fa-solid fa-box"></i> Productos</a></li>
+                    <li><a href="html/productos.html" class="menu-btn"><i class="fa-solid fa-box"></i> Productos</a></li>
                     <li>
                         <button class="menu-btn" id="btn-login">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" fill="currentColor"
@@ -436,7 +436,7 @@
         <div class="carousel-container">
             <div class="carousel-track">
                 <div class="carousel-slide">
-                    <img src="../imgs/carrusel1.jpg" alt="Black Friday">
+                    <img src="imgs/carrusel1.jpg" alt="Black Friday">
                     <div class="carousel-caption">
                         <button class="menu-btn">Ver Más</button>
                         <h2>Black Friday</h2>
@@ -444,7 +444,7 @@
                     </div>
                 </div>
                 <div class="carousel-slide">
-                    <img src="../imgs/carrusel2.jpg" alt="Ofertas Especiales">
+                    <img src="imgs/carrusel2.jpg" alt="Ofertas Especiales">
                     <div class="carousel-caption">
                         <button class="menu-btn">Ver Más</button>
                         <h2>Ofertas Especiales</h2>
@@ -652,8 +652,8 @@
             <h2>Â¿Listo para armar tu PC ideal?</h2>
             <p>Explora nuestro catÃ¡logo completo con mÃ¡s de 100 productos</p>
             <div class="buttons">
-                <button class="btn primary"><a href="productos.html">Ir al CatÃ¡logo</a></button>
-            </div> 
+                <button class="btn primary"><a href="html/productos.html">Ir al CatÃ¡logo</a></button>
+            </div>
         </div>  
     <footer>
         <div class="Footer_Container">
@@ -677,18 +677,18 @@
                     </ul>
                 </div>
             </div>
-            <h2><a href="Terminos_condiciones">Términos y Condiciones</a></h2>
+            <h2><a href="html/Terminos_condiciones.html">Términos y Condiciones</a></h2>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="../scriptsFolder/Inicio.js"></script>
-    <script type="module" src="../scriptsFolder/auth.js"></script>
+    <script src="scriptsFolder/Inicio.js"></script>
+    <script type="module" src="scriptsFolder/auth.js"></script>
     
     <!-- Cargar 4 productos aleatorios en el grid principal con el mismo estilo -->
     <script type="module">
-        import { obtenerProductos } from '../scriptsFolder/api/api_productos.js';
-        import { agregarAlCarrito } from '../scriptsFolder/funciones.js';
+        import { obtenerProductos } from './scriptsFolder/api/api_productos.js';
+        import { agregarAlCarrito } from './scriptsFolder/funciones.js';
         
         const PLACEHOLDER_IMG = 'https://via.placeholder.com/200?text=Sin+Imagen';
         
@@ -787,8 +787,8 @@
     
     <!-- Script para la bÃºsqueda en ambas barras -->
     <script type="module">
-        import { buscarProductos } from '../scriptsFolder/api/api_busqueda.js';
-        import { mostrarDetallesProducto } from '../scriptsFolder/detallesProducto.js';
+        import { buscarProductos } from './scriptsFolder/api/api_busqueda.js';
+        import { mostrarDetallesProducto } from './scriptsFolder/detallesProducto.js';
 
         class BusquedaManager {
             constructor(type) {
@@ -873,7 +873,7 @@
             performFinalSearch() {
                 const query = this.searchInput.value.trim();
                 if (query.length >= 2) {
-                    window.location.href = `productos.html?busqueda=${encodeURIComponent(query)}`;
+                    window.location.href = `html/productos.html?busqueda=${encodeURIComponent(query)}`;
                 }
             }
 
@@ -1001,7 +1001,7 @@
                 mobileSearchInput.addEventListener('input', (e) => {
                     const query = e.target.value.trim();
                     if (query.length >= 2) {
-                        window.location.href = `productos.html?busqueda=${encodeURIComponent(query)}`;
+                        window.location.href = `html/productos.html?busqueda=${encodeURIComponent(query)}`;
                     }
                 });
             }
@@ -1010,7 +1010,7 @@
 
     <!-- Scripts existentes -->
     <script type="module">
-        import { agregarAlCarrito, renderizarCarrito, toggleCart, updateCartCount } from '../scriptsFolder/funciones.js';
+        import { agregarAlCarrito, renderizarCarrito, toggleCart, updateCartCount } from './scriptsFolder/funciones.js';
         
         const parsePrice = (texto) => {
             if (!texto) return 0;
@@ -1071,7 +1071,7 @@
 
             const loginButton = document.getElementById('btn-login');
             if (loginButton) {
-                import('../scriptsFolder/modalHandler.js')
+                import('./scriptsFolder/modalHandler.js')
                     .then(({ toggleLoginModal }) => {
                         loginButton.addEventListener('click', (event) => {
                             event.preventDefault();
@@ -1154,7 +1154,7 @@
         </div>
     </div>
     <div id="toast-container"></div>
-    <script src="../scriptsFolder/chatbot.js"></script>
+    <script src="scriptsFolder/chatbot.js"></script>
 
     <!-- Correcciones de texto visibles (fallbacks y acentos) -->
     <script>
@@ -1291,4 +1291,3 @@
     </script>
 </body>
 </html>
-

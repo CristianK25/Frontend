@@ -1,4 +1,4 @@
-﻿﻿import { cerrarSesion } from './api/api_auth.js';
+﻿﻿﻿﻿﻿import { cerrarSesion } from './api/api_auth.js';
 import { obtenerMiPerfil, crearDomicilio, eliminarDomicilio } from './api/api_usuarios.js';
 import { eliminarFavorito } from './api/api_favoritos.js';
 import { showAlert } from './funciones.js';
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 message: 'No se pudieron cargar los datos del perfil. Serás redirigido al inicio.',
                 type: 'error'
             });
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
         }
     }
 
@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             cerrarSesion();
             showAlert({ title: 'Sesión Cerrada', message: 'Has cerrado sesión exitosamente.', type: 'info' });
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
         });
     }
 
