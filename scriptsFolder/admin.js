@@ -10,6 +10,7 @@ import {
 
 import { cerrarSesion } from './api/api_auth.js';
 import { showAlert } from './funciones.js';
+import { BASE_URL } from './api/apiClient.js';
 import { renderizarEstrellas, obtenerPromedioEstrellas } from './estrellas.js';
 import { obtenerTodasLasVentas as getAllSales } from './api/api_ventas.js';
 import {
@@ -549,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDiv.textContent = `Buscando producto "${nombre}"...`;
                 console.log("🔍 Buscando producto con nombre:", nombre);
                 
-                const buscarUrl = `http://localhost:8080/api/productos/buscar-id?nombre=${encodeURIComponent(nombre)}`;
+                const buscarUrl = `${BASE_URL}/productos/buscar-id?nombre=${encodeURIComponent(nombre)}`;
                 console.log("🌐 URL de búsqueda:", buscarUrl);
                 
                 const buscarResponse = await fetch(buscarUrl, {
@@ -585,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 console.log("📦 FormData creado, archivos:", formData.getAll('imagenes').length);
                 
-                const uploadUrl = `http://localhost:8080/api/producto-imagenes/producto/${productoId}`;
+                const uploadUrl = `${BASE_URL}/producto-imagenes/producto/${productoId}`;
                 console.log("🌐 URL de subida:", uploadUrl);
 
                 const uploadResponse = await fetch(uploadUrl, {

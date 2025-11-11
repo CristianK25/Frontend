@@ -1,4 +1,6 @@
 // Espera a que el contenido de la página esté completamente cargado
+import { BASE_URL } from './api/apiClient.js';
+
 document.addEventListener("DOMContentLoaded", () => {
 
     // 1. Seleccionamos el botón de pago por su ID
@@ -13,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checkoutButton.disabled = true; // Deshabilitamos el botón para evitar múltiples clics
 
         // 3. Obtener el token de autenticación y los productos del carrito desde localStorage
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem('jwt_token');
         const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
         // Verificación de seguridad: el usuario debe estar logueado y tener productos en el carrito.
@@ -42,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // 5. Realizamos la petición al backend usando 'fetch'.
-        fetch('http://localhost:8080/api/payments/create-order', {
+        fetch(`${BASE_URL}/payments/create-order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

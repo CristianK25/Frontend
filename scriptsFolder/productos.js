@@ -1,9 +1,9 @@
-const API_BASE = "http://localhost:8080/api";
+import { BASE_URL } from './api/apiClient.js';
 
 // === 1️⃣ Obtener productos del backend ===
 async function obtenerProductos() {
     try {
-        const res = await fetch(`${API_BASE}/productos`);
+        const res = await fetch(`${BASE_URL}/productos`);
         if (!res.ok) throw new Error("Error cargando productos");
         return await res.json();
     } catch (error) {
@@ -15,7 +15,7 @@ async function obtenerProductos() {
 // === 2️⃣ Obtener promedio de estrellas de un producto ===
 async function obtenerPromedioEstrellas(productoId) {
     try {
-        const res = await fetch(`${API_BASE}/estrellas/promedio/${productoId}`);
+        const res = await fetch(`${BASE_URL}/estrellas/promedio/${productoId}`);
         if (!res.ok) throw new Error("Error al obtener estrellas");
         return await res.json();
     } catch (error) {
@@ -85,12 +85,12 @@ function habilitarHoverEstrellas() {
         star.addEventListener("click", async () => {
             const puntuacion = star.dataset.value;
             try {
-                const token = localStorage.getItem("token");
-                const res = await fetch(`${API_BASE}/estrellas`, {
+                const token = localStorage.getItem('jwt_token');
+                const res = await fetch(`${BASE_URL}/estrellas`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         productoId,

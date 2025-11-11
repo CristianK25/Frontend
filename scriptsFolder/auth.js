@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const userRoles = data.roles;
                     if (userRoles.includes('ROLE_ADMIN')) {
-                        // Si es administrador, redirigir a la página de administración
+                        // Redirigir a administración solo una vez, después del login
                         window.location.href = '/html/admin.html';
                     } else {
-                        // Si no es administrador, actualizar la UI normal (Mi Perfil, Cerrar Sesión)
-                        updateUIForLoggedInUser();
+                        // Redirigir al inicio/vista principal después del login
+                        window.location.href = '/index.html';
                     }
                 } else {
                     throw new Error('Respuesta inesperada del servidor.');
@@ -144,10 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const userRoles = JSON.parse(localStorage.getItem('user_roles') || '[]');
 
-        if (userRoles.includes('ROLE_ADMIN')) {
-            window.location.href = '/html/admin.html';
-            return;
-        }
+        // No redirigir admins automáticamente en cada carga
 
         loginListItem.innerHTML = `
             <a href="/html/perfil.html" class="menu-btn menu-btn--profile" id="nav-profile-link">

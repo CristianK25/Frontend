@@ -1,3 +1,5 @@
+import { BASE_URL } from './api/apiClient.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const bubble = document.getElementById("chatbot-bubble");
   const windowChat = document.getElementById("chatbot-window");
@@ -81,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.scrollTop = messages.scrollHeight;
 
     // Llamada al backend
-    fetch("http://localhost:8080/api/chat", {
+    fetch(`${BASE_URL}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: text })

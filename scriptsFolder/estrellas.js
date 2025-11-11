@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+import { BASE_URL } from './api/apiClient.js';
 
 /**
  * Renderiza estrellas visuales basadas en el promedio
@@ -30,7 +30,7 @@ export function renderizarEstrellas(promedio) {
  */
 export async function obtenerPromedioEstrellas(productoId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/estrellas/promedio/${productoId}`);
+        const response = await fetch(`${BASE_URL}/estrellas/promedio/${productoId}`);
         if (!response.ok) {
             console.warn(`No se pudo obtener el promedio para el producto ${productoId}`);
             return 0;
@@ -53,7 +53,7 @@ export async function enviarCalificacion(productoId, puntuacion) {
     if (puntuacion < 1 || puntuacion > 5) throw new Error('La puntuación debe estar entre 1 y 5');
     
     try {
-        const response = await fetch(`${API_BASE_URL}/estrellas`, {
+        const response = await fetch(`${BASE_URL}/estrellas`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

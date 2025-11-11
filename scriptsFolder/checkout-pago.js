@@ -5,11 +5,7 @@ import { showAlert } from './funciones.js';
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('jwt_token');
   if (!token) {
-    showAlert({
-      title: 'Acceso Requerido',
-      message: 'Debes iniciar sesión para usar el checkout.',
-      type: 'warning'
-    });
+    // Página privada: no mostrar alertas; redirección limpia
     window.location.href = 'index.html';
     return;
   }
@@ -61,13 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     usuario = await obtenerMiPerfil();
   } catch (error) {
-    console.error('No se pudo obtener el perfil del usuario:', error);
-    showAlert({
-      title: 'Error de Perfil',
-      message: 'No pudimos obtener tus datos. Por favor, inicia sesión nuevamente.',
-      type: 'error'
-    });
-    window.location.href = 'index.html';
+    console.info('Autenticación requerida o sesión expirada en checkout:', error?.message || error);
     return;
   }
 

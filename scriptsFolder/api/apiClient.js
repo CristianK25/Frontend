@@ -1,24 +1,11 @@
-// c:\Users\windows\Desktop\PROYECTO_YACOMO\Frontend\scriptsFolder\api\apiClient.js
+// Central HTTP client for API calls
 
-export const BASE_URL = 'https://backend-22cs.onrender.com';
+export const BASE_URL = 'https://backend-22cs.onrender.com/api';
 
 /**
- * Función genérica y robusta para realizar llamadas a la API.
- * Maneja:
- * - Autenticación con JWT.
- * - Cuerpo JSON o FormData.
- * - Parámetros de consulta (queryParams).
- * - Distintos métodos HTTP.
- * - Manejo global de errores.
- *
- * @param {string} endpoint - Ruta del endpoint (por ej. '/productos', '/usuarios/5', '/ventas').
- * @param {string} method - Método HTTP (GET, POST, PUT, PATCH, DELETE).
- * @param {object|FormData|null} [data=null] - Datos a enviar (objeto o FormData).
- * @param {boolean} [requiresAuth=true] - Si la petición requiere token JWT.
- * @param {object|null} [queryParams=null] - Parámetros de consulta opcionales.
- * @param {object|null} [customHeaders=null] - Encabezados adicionales (sobrescriben los defaults).
- * @returns {Promise<object|null>} - La respuesta JSON o null si no hay contenido (204).
- * @throws {Error} - Si la petición falla.
+ * Generic API caller with JWT support, query params, JSON/FormData body,
+ * and global error handling. Auth failures are handled silently on public pages
+ * and via redirect only on private pages.
  */
 export async function llamarApi(
   endpoint,
@@ -29,36 +16,33 @@ export async function llamarApi(
   customHeaders = null
 ) {
   try {
-    // 🔹 Construcción dinámica de la URL
+    // Build URL with optional query params
     let url = `${BASE_URL}${endpoint}`;
     if (queryParams && typeof queryParams === 'object') {
       const query = new URLSearchParams(queryParams).toString();
       if (query) url += `?${query}`;
     }
 
-    // 🔹 Encabezados base
     const headers = customHeaders ? { ...customHeaders } : { 'Content-Type': 'application/json' };
 
-    // 🔹 Autenticación
+    // Auth header when required
     if (requiresAuth) {
       const token = localStorage.getItem('jwt_token');
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       } else {
-        console.warn('Auth required but no JWT token found. Redirecting to login.');
-        redirectToLogin();
-        throw new Error('Authentication required.');
+        const err = new Error('NO_AUTH_TOKEN');
+        err.code = 'NO_AUTH_TOKEN';
+        throw err;
       }
     }
 
-    // 🔹 Configuración base de la petición
     const config = { method, headers };
 
-    // 🔹 Cuerpo de la petición (solo para métodos que lo aceptan)
-    const methodAllowsBody = ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase());
+    // Body for methods allowing it
+    const methodAllowsBody = ['POST', 'PUT', 'PATCH'].includes(String(method).toUpperCase());
     if (data && methodAllowsBody) {
       if (data instanceof FormData) {
-        // Si es FormData, no se define Content-Type manualmente (el navegador lo hace)
         delete headers['Content-Type'];
         config.body = data;
       } else {
@@ -66,40 +50,32 @@ export async function llamarApi(
       }
     }
 
-    // 🔹 Ejecución de la petición
     const response = await fetch(url, config);
 
-    // 🔹 Manejo de respuestas no exitosas
     if (!response.ok) {
       const errorData = await safeJsonParse(response);
-      let message =
+      const message =
         errorData?.message ||
         errorData?.error ||
         `Error ${response.status}: ${response.statusText}`;
 
-      // Ejemplo: si el token expira
       if (response.status === 401) {
         handleUnauthorized();
       }
 
-      throw new Error(message);
+      const e = new Error(message);
+      e.status = response.status;
+      throw e;
     }
 
-    // 🔹 Si no hay contenido (204)
     if (response.status === 204) return null;
-
-    // 🔹 Intentar parsear JSON, devolver texto si no es JSON válido
-    const result = await safeJsonParse(response);
-    return result;
+    return await safeJsonParse(response);
   } catch (error) {
     handleApiError(error, endpoint);
     throw error;
   }
 }
 
-/**
- * Intenta parsear la respuesta como JSON sin romper el flujo.
- */
 async function safeJsonParse(response) {
   try {
     return await response.json();
@@ -108,37 +84,48 @@ async function safeJsonParse(response) {
   }
 }
 
-/**
- * Redirige al login si el usuario no está autenticado.
- */
 function redirectToLogin() {
-  const currentPage = window.location.pathname;
-
-  // Evita redirigir si ya estás en el login
+  const currentPage = (typeof window !== 'undefined' && window.location && window.location.pathname) || '';
   if (currentPage.endsWith('/index.html') || currentPage === '/' || currentPage.includes('login')) {
-    console.warn('Ya estás en la página de login, no se redirige nuevamente.');
     return;
   }
-
   localStorage.removeItem('jwt_token');
   localStorage.removeItem('user_roles');
   window.location.href = '/index.html';
 }
 
-/**
- * Maneja errores globales de API (red, CORS, 500, etc.).
- */
-function handleApiError(error, endpoint) {
-  console.error(`🔴 Error en endpoint ${endpoint}:`, error);
-  alert(error.message || 'Error inesperado al comunicarse con el servidor.');
+function isPrivatePage() {
+  try {
+    const path = (window.location && window.location.pathname) || '';
+    return /(?:\/|^)(perfil|admin|checkout)/i.test(path);
+  } catch {
+    return false;
+  }
 }
 
-/**
- * Maneja el caso de token inválido o expirado.
- */
+function isPublicPage() {
+  return !isPrivatePage();
+}
+
+function handleApiError(error, endpoint) {
+  if (error?.code === 'NO_AUTH_TOKEN' || error?.message === 'NO_AUTH_TOKEN') {
+    return;
+  }
+  if (isPublicPage()) {
+    console.warn(`API error (página pública) ${endpoint}:`, error?.message || error);
+    return;
+  }
+  console.error(`🔴 Error en endpoint ${endpoint}:`, error);
+  if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+    alert(error.message || 'Error inesperado al comunicarse con el servidor.');
+  }
+}
+
 function handleUnauthorized() {
-  alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-  redirectToLogin();
+  if (isPrivatePage()) {
+    redirectToLogin();
+  }
 }
 
 export default llamarApi;
+

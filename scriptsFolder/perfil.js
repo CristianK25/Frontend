@@ -137,13 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarFavoritos(favoritos);
             mostrarDirecciones(domicilios);
         } catch (error) {
-            console.error('Error al cargar el perfil:', error);
-            showAlert({
-                title: 'Error de Carga',
-                message: 'No se pudieron cargar los datos del perfil. Serás redirigido al inicio.',
-                type: 'error'
-            });
-            window.location.href = '../index.html';
+            console.warn('No se pudieron cargar los datos del perfil:', error);
+            // Silencioso: no alertas ni redirecciones aquí
         }
     }
 
@@ -427,5 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    cargarDatosPerfil();
+    if (localStorage.getItem('jwt_token')) {
+        cargarDatosPerfil();
+    }
 });

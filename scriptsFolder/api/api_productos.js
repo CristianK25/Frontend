@@ -1,6 +1,6 @@
 // c:\Users\windows\Desktop\PROYECTO_YACOMO\Frontend\scriptsFolder\api\api_productos.js
 
-import llamarApi from './apiClient.js';
+import llamarApi, { BASE_URL } from './apiClient.js';
 
 /**
  * ================================================================
@@ -157,7 +157,7 @@ export const subirImagenesProducto = async (productoId, imagenes) => {
 
   const token = localStorage.getItem('jwt_token');
   const response = await fetch(
-    `http://localhost:8080/api/producto-imagenes/producto/${productoId}`,
+    `${BASE_URL}/producto-imagenes/producto/${productoId}`,
     {
       method: 'POST',
       headers: {
@@ -188,7 +188,7 @@ export const eliminarImagenProducto = async (productoId, imagenId) => {
   
   const token = localStorage.getItem('jwt_token');
   const response = await fetch(
-    `http://localhost:8080/api/producto-imagenes/${imagenId}/producto/${productoId}`,
+    `${BASE_URL}/producto-imagenes/${imagenId}/producto/${productoId}`,
     {
       method: 'DELETE',
       headers: {
