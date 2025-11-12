@@ -859,7 +859,8 @@ body { padding-top: 70px; }
     transition: transform 0.3s, box-shadow 0.3s;
     width: 100%;
     margin-top: 15px;
-     min-height: 420px;  
+    min-height: 420px;  
+    margin-left:54%
 
 
 
