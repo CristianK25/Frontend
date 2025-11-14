@@ -17,6 +17,214 @@
     <script type="module" src="/scriptsFolder/modalHandler.js"></script>
     <script type="module" src="/scriptsFolder/funciones.js"></script>
 
+    <style>
+        /* Estilos para la barra de bÃºsqueda en inicio */
+        .hero-busqueda {
+            margin: 2rem auto 3rem;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .hero-busqueda-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-busqueda-container:focus-within {
+            border-color: #4a90e2;
+            box-shadow: 0 15px 40px rgba(74, 144, 226, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .hero-busqueda input {
+            width: 100%;
+            height: 50px;
+            border: none;
+            background: transparent;
+            padding: 0 60px 0 20px;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+        }
+        
+        .hero-busqueda input::placeholder {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .hero-busqueda-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(90deg, #4facfe, #7366ff);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-busqueda-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 5px 15px rgba(122, 77, 255, 0.4);
+        }
+        
+        .hero-busqueda-resultados {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        /* Estilos para la bÃºsqueda del header */
+        .busqueda-resultados {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        /* Mensaje hero para la bÃºsqueda */
+        .hero-message {
+            margin-top: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .hero-message h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00c6ff, #ad00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .hero-message p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Estilos para resultados de bÃºsqueda */
+        .resultado-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .resultado-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .resultado-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+
+        .resultado-info {
+            flex: 1;
+        }
+
+        .resultado-nombre {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .resultado-precio {
+            font-weight: 700;
+            color: #4a90e2;
+            margin-bottom: 4px;
+        }
+
+        .resultado-stock {
+            font-size: 0.85rem;
+        }
+
+        .en-stock {
+            color: #28a745;
+        }
+
+        .sin-stock {
+            color: #dc3545;
+        }
+
+        .resultado-ver-detalles {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .resultado-ver-detalles:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .sin-resultados, .buscando {
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .loading-spinner {
+            margin-bottom: 1rem;
+        }
+
+        /* Correcciones de texto en resultados de búsqueda (mostrar texto correcto) */
+        .resultado-stock {
+            color: transparent;
+            position: relative;
+        }
+        .resultado-stock.en-stock::before {
+            content: 'En stock';
+            color: #28a745;
+        }
+        .resultado-stock.sin-stock::before {
+            content: 'Agotado';
+            color: #dc3545;
+        }
+    </style>
+
 </head>
 
 
