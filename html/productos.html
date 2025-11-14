@@ -80,8 +80,12 @@
         <div class="busqueda" id="searchToggle">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input id="headerSearchInput" type="search" placeholder="Buscar componentes...">
-          <div id="headerSearchResults"></div>
         </div>
+
+      <div class="busqueda-resultados" id="headerSearchResults">
+          <div class="resultados-container" id="headerResultsContainer"></div>
+      </div>
+
 
 
         <div class="menu" id="mobileMenu">
@@ -516,7 +520,7 @@
   </div>
 </div>
 <div id="toast-container"></div>
-<script type="module" src="scriptsFolder/chatbot.js"></script>
+<script type="module" src="/scriptsFolder/chatbot.js"></script>
 <script>
   // Filtros por múltiples categorías con checkboxes + ordenamiento por precio
   document.addEventListener('DOMContentLoaded', () => {
@@ -655,12 +659,13 @@
     })();
 </script>
 
-<script type="module">
-    import { buscarProductos } from '/scriptsFolder/busqueda.js';
-    import { BusquedaManager } from '/scriptsFolder/busqueda.js';
-
-    new BusquedaManager('header');
+<script type="module" src="/scriptsFolder/busqueda.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new BusquedaManager("header");
+    });
 </script>
+
 
 </body>
 
