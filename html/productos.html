@@ -19,7 +19,10 @@
 
 </head>
 
-<div id="cart" class="ts-cart">
+
+
+<body>
+  <div id="cart" class="ts-cart">
     <a href="#" class="ts-cart__overlay" aria-hidden="true"></a>
 
     <aside class="ts-cart__panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
@@ -58,8 +61,6 @@
         </footer>
     </aside>
 </div>
-
-<body>
     <header class="main-header">
         <a href="/index.html" class="header-logo-title">
             <div class="logo">
@@ -866,9 +867,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Inicializar bÃºsqueda del header
             new BusquedaManager('header');
-            
-            // Inicializar bÃºsqueda del hero
-            new BusquedaManager('hero');
+
+        
             
             // Inicializar bÃºsqueda mÃ³vil si existe
             const mobileSearchInput = document.getElementById('mobileSearchInput');
