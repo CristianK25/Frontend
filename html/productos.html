@@ -78,13 +78,15 @@
         </button>
 
         <div class="busqueda" id="searchToggle">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input id="headerSearchInput" type="search" placeholder="Buscar componentes...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" placeholder="Buscar componentes..." id="headerSearchInput">
         </div>
-
+        
       <div class="busqueda-resultados" id="headerSearchResults">
-          <div class="resultados-container" id="headerResultsContainer"></div>
-      </div>
+            <div class="resultados-container" id="headerResultsContainer">
+                <!-- Los resultados se cargarÃ¡n aquÃ­ dinÃ¡micamente -->
+            </div>
+        </div>
 
 
 
@@ -659,13 +661,227 @@
     })();
 </script>
 
-<script type="module" src="/scriptsFolder/busqueda.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        new BusquedaManager("header");
-    });
-</script>
+<script type="module">
+        import { buscarProductos } from '/scriptsFolder/api/api_busqueda.js';
+        import { mostrarDetallesProducto } from '/scriptsFolder/detallesProducto.js';
 
+        class BusquedaManager {
+            constructor(type) {
+                this.type = type; // 'header' o 'hero'
+                this.searchInput = document.getElementById(`${type}SearchInput`);
+                this.searchBtn = type === 'hero' ? document.getElementById(`${type}SearchBtn`) : null;
+                this.resultsContainer = document.getElementById(`${type}SearchResults`);
+                this.resultsList = document.getElementById(`${type}ResultsContainer`);
+                this.debounceTimer = null;
+                this.productosEncontrados = [];
+                
+                this.init();
+            }
+
+            init() {
+                if (!this.searchInput || !this.resultsContainer) {
+                    console.error(`âŒ Elementos de bÃºsqueda ${this.type} no encontrados`);
+                    return;
+                }
+
+                // Event listeners
+                this.searchInput.addEventListener('input', (e) => {
+                    this.handleInput(e);
+                });
+                
+                this.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.performFinalSearch();
+                    } else if (e.key === 'Escape') {
+                        this.hideResults();
+                    }
+                });
+                
+                this.searchInput.addEventListener('focus', () => {
+                    if (this.searchInput.value.trim().length >= 2) {
+                        this.showResults();
+                    }
+                });
+                
+                if (this.searchBtn) {
+                    this.searchBtn.addEventListener('click', () => {
+                        this.performFinalSearch();
+                    });
+                }
+                
+                document.addEventListener('click', (e) => this.handleClickOutside(e));
+                this.resultsContainer.addEventListener('click', (e) => e.stopPropagation());
+                
+                console.log(`âœ… BÃºsqueda ${this.type} inicializada`);
+            }
+
+            handleInput(e) {
+                const query = e.target.value.trim();
+                
+                if (this.debounceTimer) {
+                    clearTimeout(this.debounceTimer);
+                }
+
+                if (query.length < 2) {
+                    this.hideResults();
+                    return;
+                }
+
+                this.showLoading();
+                
+                this.debounceTimer = setTimeout(() => {
+                    this.performSearch(query);
+                }, 300);
+            }
+
+            async performSearch(query) {
+                try {
+                    this.productosEncontrados = await buscarProductos(query);
+                    this.displayResults(this.productosEncontrados, query);
+                } catch (error) {
+                    console.error(`Error en bÃºsqueda ${this.type}:`, error);
+                    this.displayError();
+                }
+            }
+
+            performFinalSearch() {
+                const query = this.searchInput.value.trim();
+                if (query.length >= 2) {
+                    window.location.href = `html/productos.html?busqueda=${encodeURIComponent(query)}`;
+                }
+            }
+
+            displayResults(productos, query) {
+                if (!this.resultsList) return;
+
+                if (productos.length === 0) {
+                    this.resultsList.innerHTML = `
+                        <div class="sin-resultados">
+                            <i class="fa-solid fa-search" style="font-size: 24px; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No se encontraron productos para "${query}"</p>
+                            <small>Intenta con otros tÃ©rminos de bÃºsqueda</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.resultsList.innerHTML = productos.slice(0, 6).map(producto => {
+                    const imagenUrl = producto.imagenes?.[0]?.url || 
+                                     'https://via.placeholder.com/50?text=Sin+Imagen';
+                    
+                    return `
+                        <div class="resultado-item" data-product-id="${producto.id}">
+                            <img src="${imagenUrl}" 
+                                 alt="${producto.nombre}" 
+                                 onerror="this.src='https://via.placeholder.com/50?text=Error'">
+                            <div class="resultado-info">
+                                <div class="resultado-nombre">${producto.nombre}</div>
+                                <div class="resultado-precio">$${producto.precio.toLocaleString('es-AR')}</div>
+                                <div class="resultado-stock ${producto.stock > 0 ? 'en-stock' : 'sin-stock'}">
+                                    ${producto.stock > 0 ? 'ðŸŸ¢ En stock' : 'ðŸ”´ Agotado'}
+                                </div>
+                            </div>
+                            <button class="resultado-ver-detalles" data-product-id="${producto.id}">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                // Event listeners para resultados
+                this.resultsList.querySelectorAll('.resultado-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.closest('.resultado-ver-detalles')) {
+                            const productId = item.dataset.productId;
+                            this.mostrarDetalles(productId);
+                        }
+                    });
+                });
+
+                this.resultsList.querySelectorAll('.resultado-ver-detalles').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const productId = button.dataset.productId;
+                        this.mostrarDetalles(productId);
+                    });
+                });
+            }
+
+            mostrarDetalles(productId) {
+                const producto = this.productosEncontrados.find(p => String(p.id) === String(productId));
+                
+                if (producto) {
+                    this.hideResults();
+                    this.searchInput.value = '';
+                    mostrarDetallesProducto(productId);
+                }
+            }
+
+            showLoading() {
+                if (!this.resultsList) return;
+                
+                this.resultsList.innerHTML = `
+                    <div class="buscando">
+                        <div class="loading-spinner">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                        </div>
+                        <div>Buscando productos...</div>
+                    </div>
+                `;
+                this.showResults();
+            }
+
+            displayError() {
+                if (!this.resultsList) return;
+                
+                this.resultsList.innerHTML = `
+                    <div class="sin-resultados">
+                        <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px; color: #ff6b6b;"></i>
+                        <p>Error al buscar productos</p>
+                        <small>Intenta nuevamente en unos momentos</small>
+                    </div>
+                `;
+            }
+
+            showResults() {
+                this.resultsContainer.style.display = 'block';
+            }
+
+            hideResults() {
+                this.resultsContainer.style.display = 'none';
+            }
+
+            handleClickOutside(e) {
+                if (!this.resultsContainer.contains(e.target) && 
+                    e.target !== this.searchInput && 
+                    e.target !== this.searchBtn) {
+                    this.hideResults();
+                }
+            }
+        }
+
+        // Inicializar cuando el DOM estÃ© listo
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar bÃºsqueda del header
+            new BusquedaManager('header');
+            
+            // Inicializar bÃºsqueda del hero
+            new BusquedaManager('hero');
+            
+            // Inicializar bÃºsqueda mÃ³vil si existe
+            const mobileSearchInput = document.getElementById('mobileSearchInput');
+            if (mobileSearchInput) {
+                mobileSearchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.trim();
+                    if (query.length >= 2) {
+                        window.location.href = `html/productos.html?busqueda=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 
